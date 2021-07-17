@@ -10,7 +10,7 @@
 #include "sitegraph.hpp"
 
 inline std::string get_contig_name(std::string description) {
-    return description.find('\'') == std::string::npos ? description.substr(5, description.find_first_of('_',4) - 3) : description.substr(5, description.find_first_of('_',4) - 3) + 'r';
+    return description.find('\'') == std::string::npos ? description.substr(5, description.find_first_of('_',5) - 5) : description.substr(5, description.find_first_of('_',5) - 5) + 'r';
 }
 
 inline std::pair<std::string, std::vector<std::string>>
@@ -43,6 +43,6 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
 
 static std::unordered_map<int, Site> Sites;
 
-static std::unordered_map<std::string, std::reference_wrapper<Contig>> Contigs;
+static std::unordered_map<std::string, Contig*> Contigs;
 
 #endif

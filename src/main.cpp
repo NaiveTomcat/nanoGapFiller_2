@@ -6,10 +6,17 @@
 
 using namespace std;
 
+
+int Site::total = 0;
+int Edge::count = 0;
+
 int main(int argc, char **argv)
 {
     int     count = 1;
-    string  inFile, outFile, s1, s2;
+    string  inFile = "assembly_graph.fastg";
+    string  outFile = "Output.sitegraph";
+    string  s1 = "GCTCTTC";
+    string  s2 = "GAAGAGC";
     int64_t overlap = 77;
     while (count < argc) {
         const string flag = argv[count];

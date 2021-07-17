@@ -6,7 +6,7 @@ Contig::get_first_site()
     if (!sites.empty())
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{
-            {&(sites[0].get()), sites[0].get().pos, {name}}};
+            {sites[0], sites[0]->pos, {name}}};
     if (!reachable_site_memo.empty()) // Memorandum
         return reachable_site_memo;
     if (occurance > maxoccur)
@@ -17,7 +17,7 @@ Contig::get_first_site()
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
         next_sites;
     for (auto contig : next) {
-        auto temp_sites = contig.get().get_first_site();
+        auto temp_sites = contig->get_first_site();
         for (auto temp_site_iter = temp_sites.begin();
              temp_site_iter < temp_sites.end(); temp_site_iter++) {
             std::get<1>(*temp_site_iter) += sequence.length();
