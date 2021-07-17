@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "sitegraph.hpp"
+
 inline std::string get_contig_name(std::string description) {
     return description.find('\'') == std::string::npos ? description.substr(5, description.find_first_of('_',4) - 3) : description.substr(5, description.find_first_of('_',4) - 3) + 'r';
 }
