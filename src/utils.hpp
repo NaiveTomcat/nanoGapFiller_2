@@ -32,4 +32,15 @@ get_contig_description(std::string contig_header)
     return std::pair<std::string, std::vector<std::string>>(current_name, successor);
 }
 
+std::string export_sitegraph();
+
+void connect_between_contigs();
+
+void construct_assembly_graph(std::string filename, std::string siteseq_1,
+                              std::string siteseq_2, int overlap_length = 127);
+
+static std::unordered_map<int, Site> Sites;
+
+static std::unordered_map<std::string, std::reference_wrapper<Contig>> Contigs;
+
 #endif
