@@ -34,7 +34,7 @@ class Site
     int               id;
     uint64_t          pos;
     std::string       of;
-    std::vector<Edge> edges;
+    std::vector<Edge*> edges;
     // std::vector<std::reference_wrapper<Site>> layer1;
     // std::vector<std::reference_wrapper<Site>> layer2;
     // std::vector<std::reference_wrapper<Site>> layer3;

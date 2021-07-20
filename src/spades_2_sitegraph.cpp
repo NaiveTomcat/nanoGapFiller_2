@@ -59,9 +59,10 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         // Add edges for sites within the same contig
         for (auto site_iter = contig->sites.begin();
              site_iter < contig->sites.end() - 1; site_iter++) {
-            (*site_iter)->edges.push_back(
-                Edge(*(site_iter + 1),
-                     (*(site_iter + 1))->pos - (*site_iter)->pos));
+            auto edge = new Edge(*(site_iter + 1),
+                     (*(site_iter + 1))->pos - (*site_iter)->pos);
+            (*site_iter)->edges.push_back(edge);
+            Edges.insert(edge);
         }
     }
     for (auto key: to_be_erased)
@@ -75,10 +76,13 @@ void connect_between_contigs()
         auto  back_dist =
             contig->sequence.length() - contig->sites.back()->pos;
         for (auto next : contig->next) {
-            for (auto site_tuple : next->get_first_site()) {
-                contig->sites.back()->edges.push_back(
-                    Edge(std::get<0>(site_tuple),
-                         back_dist + std::get<1>(site_tuple)));
+            if (next == nullptr)
+                continue;
+            auto site_tuples = next->get_first_site();
+            for (auto site_tuple : site_tuples) {
+                auto edge = new Edge(std::get<0>(site_tuple), back_dist + std::get<1>(site_tuple));
+                contig->sites.back()->edges.push_back(edge);
+                Edges.insert(edge);
             }
         }
     }
@@ -89,9 +93,9 @@ std::string export_sitegraph()
     std::ostringstream sout;
     for (auto site_iter : Sites) {
         auto site = site_iter.second;
-        for (Edge edge : site.edges) {
-            sout << site.id << ' ' << edge.to->id << ' ' << edge.len << " :";
-            for (auto via : edge.via)
+        for (auto edge : site.edges) {
+            sout << site.id << ' ' << edge->to->id << ' ' << edge->len << " :";
+            for (auto via : edge->via)
                 sout << ' ' << via;
             sout << std::endl;
         }

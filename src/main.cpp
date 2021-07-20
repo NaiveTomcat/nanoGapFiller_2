@@ -66,8 +66,8 @@ int main(int argc, char **argv)
 
     fout << endl
          << "Contigs: " << Contigs.size() << endl
-         << "Sites: " << Site::total << Sites.size() << endl
-         << "Edges: " << Edge::count << endl;
+         << "Sites: " /* << Site::total  */<< Sites.size() << endl
+         << "Edges: " /* << Edge::count  */<< Edges.size() << endl;
     
     fout << "Time preprocess: " << (assembled_time - start_time) / 1s << endl
          << "Time constructing: " << (connected_time - assembled_time) / 1s << endl;

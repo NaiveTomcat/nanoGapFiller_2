@@ -6,6 +6,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <unordered_set>
 
 #include "sitegraph.hpp"
 
@@ -44,5 +45,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
 static std::unordered_map<int, Site> Sites;
 
 static std::unordered_map<std::string, Contig*> Contigs;
+
+static std::unordered_set<Edge*> Edges;
 
 #endif
