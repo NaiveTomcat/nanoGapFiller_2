@@ -32,7 +32,7 @@ class Site
     static int total;
 
     int               id;
-    uint64_t          pos;
+    int64_t          pos;
     std::string       of;
     std::vector<Edge*> edges;
     // std::vector<std::reference_wrapper<Site>> layer1;

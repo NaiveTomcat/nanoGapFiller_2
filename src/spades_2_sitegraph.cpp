@@ -5,6 +5,12 @@
 #include <sstream>
 #include <unordered_map>
 
+extern std::unordered_map<int, Site*> Sites;
+
+extern std::unordered_map<std::string, Contig*> Contigs;
+
+extern std::unordered_set<Edge*> Edges;
+
 void construct_assembly_graph(std::string filename, std::string siteseq_1,
                               std::string siteseq_2, int overlap_length)
 {
@@ -41,16 +47,20 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         // Search sites
         {
             // Search for siteseq_1
-            auto pos = seq.find_first_of(siteseq_1);
+            auto pos = seq.find(siteseq_1);
             while (pos != std::string::npos) {
-                contig->sites.push_back(new Site(contig->name, pos));
-                pos = seq.find_first_of(siteseq_1, pos + 1);
+                auto site = new Site(contig->name, pos);
+                contig->sites.push_back(site);
+                Sites[site->id] = site;
+                pos = seq.find(siteseq_1, pos + 1);
             }
             // Search for siteseq_2
-            pos = seq.find_first_of(siteseq_2);
+            pos = seq.find(siteseq_2);
             while (pos != std::string::npos) {
-                contig->sites.push_back(new Site(contig->name, pos));
-                pos = seq.find_first_of(siteseq_2, pos + 1);
+                auto site = new Site(contig->name, pos);
+                contig->sites.push_back(site);
+                Sites[site->id] = site;
+                pos = seq.find(siteseq_2, pos + 1);
             }
         }
         // Sort sites
@@ -93,8 +103,8 @@ std::string export_sitegraph()
     std::ostringstream sout;
     for (auto site_iter : Sites) {
         auto site = site_iter.second;
-        for (auto edge : site.edges) {
-            sout << site.id << ' ' << edge->to->id << ' ' << edge->len << " :";
+        for (auto edge : site->edges) {
+            sout << site->id << ' ' << edge->to->id << ' ' << edge->len << " :";
             for (auto via : edge->via)
                 sout << ' ' << via;
             sout << std::endl;

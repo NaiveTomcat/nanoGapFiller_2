@@ -29,5 +29,5 @@ Contig::get_first_site()
     }
     occurance--;
     reachable_site_memo = next_sites;
-    return std::move(next_sites);
+    return /* std::move */(next_sites);
 }

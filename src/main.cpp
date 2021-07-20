@@ -6,6 +6,10 @@
 
 using namespace std;
 
+std::unordered_map<int, Site*> Sites;
+std::unordered_map<std::string, Contig*> Contigs;
+std::unordered_set<Edge*> Edges;
+
 
 int Site::total = 0;
 int Edge::count = 0;
