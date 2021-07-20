@@ -59,7 +59,7 @@ int main(int argc, char **argv)
     cout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s
          << endl;
 
-    connect_between_contigs();
+    connect_between_contigs(overlap - s1.length());
 
     cout << "Maximum occurance for a contig: " << Contig::maxocc_achived
          << endl;

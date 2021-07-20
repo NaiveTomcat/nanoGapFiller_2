@@ -20,6 +20,9 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
     std::string              current_line;
     std::string              current_contig_name;
     std::vector<std::string> current_contig_successor_names;
+
+    std::ofstream csvdump("sites.csv"); // DEBUG
+
     while (std::getline(fin, current_line)) {
         if (current_line[0] == '>') { // Edge Header Line
             std::tie(current_contig_name, current_contig_successor_names) =
@@ -59,7 +62,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
             continue;
         }
         auto seq = contig->sequence;
-        seq = seq.substr(0, seq.length() - overlap_length + siteseq_1.length());
+        // seq = seq.substr(0, seq.length() - overlap_length + siteseq_1.length());
         contig->sequence = seq;
         // Search sites
         {
@@ -101,12 +104,13 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
                 Edges.insert(edge);
             }
         }
+        csvdump << contig->name << "," << contig->sites.size() << std::endl;
     }
     for (auto key : to_be_erased)
         Contigs.erase(key);
 }
 
-void connect_between_contigs()
+void connect_between_contigs( int overlap_length)
 {
     for (auto contig_iter : Contigs) {
         auto contig = contig_iter.second;
@@ -117,7 +121,7 @@ void connect_between_contigs()
             for (auto next : contig->next) {
                 if (next == nullptr)
                     continue;
-                auto site_tuples = next->get_first_site();
+                auto site_tuples = next->get_first_site(overlap_length);
                 for (auto site_tuple : site_tuples) {
                     auto edge = new Edge(std::get<0>(site_tuple),
                                          back_dist + std::get<1>(site_tuple));
@@ -141,6 +145,7 @@ std::string export_sitegraph()
                  << " of " << edge->to->of << ", " << edge->len << " :";
             // for (auto via : edge->via)
             //     sout << ' ' << via;
+            sout << ' ' << site->of;
             for (auto v = edge->via.rbegin(); v < edge->via.rend(); v++)
                 sout << ' ' << *v;
             sout << std::endl;

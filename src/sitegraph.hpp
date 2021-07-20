@@ -8,8 +8,9 @@
 #include <vector>
 
 // Global flags
-static int64_t maxcontig   = 400000;
+static int64_t maxcontig   = 399999;
 static int64_t maxoccur    = 2;
+static int64_t maxlength   = INT64_MAX;
 static bool    find_layers = false;
 static bool    record_path = false;
 
@@ -63,7 +64,7 @@ class Contig
 
     Contig(std::string n) : name(n), occurance(0), had_memo(false) {}
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-    get_first_site(int depth = 0);
+    get_first_site(int overlap_length, int depth = 0, int length = 0);
 };
 
 #endif

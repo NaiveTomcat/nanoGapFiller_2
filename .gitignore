@@ -37,3 +37,4 @@
 *.sitegraph
 test/test.log
 test/test.seq
+*.csv

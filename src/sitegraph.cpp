@@ -2,13 +2,19 @@
 #include <iostream>
 
 std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-Contig::get_first_site(int depth)
+Contig::get_first_site(int overlap_length, int depth, int length)
 {
     if (sites.size() != 0) {
         // std::cout << "Find" << std::endl; // DEBUG
-        return std::vector<
-            std::tuple<Site *, int64_t, std::vector<std::string>>>{
-            {sites[0], sites[0]->pos, {name}}};
+        if (sites.back()->pos >= overlap_length) {
+            int  i    = 0;
+            auto site = sites[i];
+            while (site->pos < overlap_length)
+                site = sites[++i];
+            return std::vector<
+                std::tuple<Site *, int64_t, std::vector<std::string>>>{
+                {site, site->pos, {name}}};
+        }
     }
     if (had_memo) // Memorandum
     {
@@ -21,6 +27,11 @@ Contig::get_first_site(int depth)
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
     }
     if (depth >= maxcontig) {
+        // std::cout << "Too many contigs for a path" << std::endl; // DEBUG
+        return std::vector<
+            std::tuple<Site *, int64_t, std::vector<std::string>>>{};
+    }
+    if (length >= maxlength) {
         // std::cout << "Too many contigs for a path" << std::endl; // DEBUG
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
@@ -41,7 +52,7 @@ Contig::get_first_site(int depth)
             // std::cout << "Nullptr" << std::endl; // DEBUG
             continue;
         }
-        auto temp_sites = contig->get_first_site(depth + 1);
+        auto temp_sites = contig->get_first_site(overlap_length, depth + 1, length + sequence.length());
         for (auto temp_site_iter = temp_sites.begin();
              temp_site_iter < temp_sites.end(); temp_site_iter++) {
             std::get<1>(*temp_site_iter) += sequence.length();
@@ -54,6 +65,7 @@ Contig::get_first_site(int depth)
     occurance--;
     reachable_site_memo = next_sites;
     had_memo            = true;
-    // std::cout << "DFS at depth " << depth << " got answer" << std::endl; // DEBUG
+    // std::cout << "DFS at depth " << depth << " got answer" << std::endl; //
+    // DEBUG
     return /* std::move */ (next_sites);
 }
