@@ -1,28 +1,47 @@
 #include "sitegraph.hpp"
+#include <iostream>
 
 std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-Contig::get_first_site()
+Contig::get_first_site(int depth)
 {
-    if (sites.size() != 0)
+    if (sites.size() != 0) {
+        // std::cout << "Find" << std::endl; // DEBUG
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{
             {sites[0], sites[0]->pos, {name}}};
+    }
     if (had_memo) // Memorandum
+    {
+        // std::cout << "Find memo" << std::endl; // DEBUG
         return reachable_site_memo;
-    if (occurance > maxoccur)
+    }
+    if (occurance >= maxoccur) {
+        // std::cout << "Too many for one contig" << std::endl; // DEBUG
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
-    if (next.size() == 0)
+    }
+    if (depth >= maxcontig) {
+        // std::cout << "Too many contigs for a path" << std::endl; // DEBUG
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
+    }
+    if (next.size() == 0) {
+        // std::cout << "No successor" << std::endl; // DEBUG
+        return std::vector<
+            std::tuple<Site *, int64_t, std::vector<std::string>>>{};
+    }
     occurance++;
+    maxocc_achived = occurance > maxocc_achived ? occurance : maxocc_achived;
     // DFS
+    // std::cout << "DFS at depth " << depth << std::endl; // DEBUG
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
         next_sites;
     for (auto contig : next) {
-        if (contig == nullptr)
+        if (contig == nullptr) {
+            // std::cout << "Nullptr" << std::endl; // DEBUG
             continue;
-        auto temp_sites = contig->get_first_site();
+        }
+        auto temp_sites = contig->get_first_site(depth + 1);
         for (auto temp_site_iter = temp_sites.begin();
              temp_site_iter < temp_sites.end(); temp_site_iter++) {
             std::get<1>(*temp_site_iter) += sequence.length();
@@ -34,6 +53,7 @@ Contig::get_first_site()
     }
     occurance--;
     reachable_site_memo = next_sites;
-    had_memo = true;
-    return /* std::move */(next_sites);
+    had_memo            = true;
+    // std::cout << "DFS at depth " << depth << " got answer" << std::endl; // DEBUG
+    return /* std::move */ (next_sites);
 }

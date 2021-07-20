@@ -5,6 +5,8 @@
 #include <sstream>
 #include <unordered_map>
 
+#include <iostream>
+
 extern std::unordered_map<int, Site *> Sites;
 
 extern std::unordered_map<std::string, Contig *> Contigs;
@@ -28,13 +30,28 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
             //     std::ref(*(new Contig(current_contig_name))));
             Contigs[current_contig_name] = new Contig(current_contig_name);
             for (auto n : current_contig_successor_names) {
-                Contigs[current_contig_name]->next.push_back(Contigs[n]);
+                Contigs[current_contig_name]->next_names.push_back(n);
             }
         } else {
             Contigs[current_contig_name]->sequence += current_line;
         }
     }
+    
+    for (auto contig_iter : Contigs)
+    {
+        auto contig = contig_iter.second;
+        for (auto n : contig->next_names)
+        {
+            contig->next.push_back(Contigs[n]);
+        }
+    }
+
+    std::cout << "File read." << std::endl;
+
     std::vector<std::string> to_be_erased;
+    
+    std::vector<std::size_t> sites_location{};
+    
     for (auto contig_iter : Contigs) {
         auto contig = contig_iter.second;
         if (contig == nullptr) {
@@ -46,15 +63,15 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         contig->sequence = seq;
         // Search sites
         {
-            std::vector<std::size_t> sites_location{};
             // Search for siteseq_1
+            sites_location = {};
             auto pos = seq.find(siteseq_1);
             while (pos != std::string::npos) {
                 // auto site = new Site(contig->name, pos);
                 // contig->sites.push_back(site);
                 // Sites[site->id] = site;
-                // pos             = seq.find(siteseq_1, pos + 1);
                 sites_location.push_back(pos);
+                pos             = seq.find(siteseq_1, pos + 1);
             }
             // Search for siteseq_2
             pos = seq.find(siteseq_2);
@@ -62,8 +79,8 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
                 // auto site = new Site(contig->name, pos);
                 // contig->sites.push_back(site);
                 // Sites[site->id] = site;
-                // pos             = seq.find(siteseq_2, pos + 1);
                 sites_location.push_back(pos);
+                pos             = seq.find(siteseq_2, pos + 1);
             }
             std::sort(sites_location.begin(), sites_location.end());
             for (auto pos: sites_location) {
@@ -109,6 +126,8 @@ void connect_between_contigs()
                     Edges.insert(edge);
                 }
             }
+        // else std::cout << "No successor" << std::endl;
+        // std::cout << std::endl;
     }
 }
 

@@ -35,3 +35,5 @@
 # For this project
 
 *.sitegraph
+test/test.log
+test/test.seq

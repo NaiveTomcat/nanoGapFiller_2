@@ -9,7 +9,7 @@
 
 // Global flags
 static int64_t maxcontig   = 40;
-static int64_t maxoccur    = 40;
+static int64_t maxoccur    = 2;
 static bool    find_layers = false;
 static bool    record_path = false;
 
@@ -19,11 +19,11 @@ class Edge
 {
   public:
     Site *                   to;
-    int                      len;
+    int64_t                  len;
     std::vector<std::string> via;
     static int               count;
 
-    inline Edge(Site *b, int len_) : to(b), len(len_) { count++; }
+    inline Edge(Site *b, int64_t len_) : to(b), len(len_) { count++; }
 };
 
 class Site
@@ -31,10 +31,10 @@ class Site
   public:
     static int total;
 
-    int               id;
-    int64_t          pos;
-    std::string       of;
-    std::vector<Edge*> edges;
+    int                 id;
+    int64_t             pos;
+    std::string         of;
+    std::vector<Edge *> edges;
     // std::vector<std::reference_wrapper<Site>> layer1;
     // std::vector<std::reference_wrapper<Site>> layer2;
     // std::vector<std::reference_wrapper<Site>> layer3;
@@ -44,24 +44,26 @@ class Site
 
 inline bool SiteComp(const Site *a, const Site *b) { return a->id < b->id; }
 
-
 class Contig
 {
   private:
     int64_t occurance;
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-        reachable_site_memo;
+         reachable_site_memo;
     bool had_memo;
 
   public:
-    std::string           name;
-    std::vector<Contig *> next;
-    std::string           sequence;
-    std::vector<Site *>   sites;
+    std::string              name;
+    std::vector<Contig *>    next;
+    std::vector<std::string> next_names;
+    std::string              sequence;
+    std::vector<Site *>      sites;
+
+    static int64_t maxocc_achived;
 
     Contig(std::string n) : name(n), occurance(0), had_memo(false) {}
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-    get_first_site();
+    get_first_site(int depth = 0);
 };
 
 #endif

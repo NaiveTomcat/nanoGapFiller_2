@@ -6,21 +6,21 @@
 
 using namespace std;
 
-std::unordered_map<int, Site*> Sites;
-std::unordered_map<std::string, Contig*> Contigs;
-std::unordered_set<Edge*> Edges;
+std::unordered_map<int, Site *>           Sites;
+std::unordered_map<std::string, Contig *> Contigs;
+std::unordered_set<Edge *>                Edges;
 
-
-int Site::total = 0;
-int Edge::count = 0;
+int     Site::total            = 0;
+int     Edge::count            = 0;
+int64_t Contig::maxocc_achived = 0;
 
 int main(int argc, char **argv)
 {
-    int     count = 1;
-    string  inFile = "assembly_graph.fastg";
+    int     count   = 1;
+    string  inFile  = "assembly_graph.fastg";
     string  outFile = "Output.sitegraph";
-    string  s1 = "GCTCTTC";
-    string  s2 = "GAAGAGC";
+    string  s1      = "GCTCTTC";
+    string  s2      = "GAAGAGC";
     int64_t overlap = 77;
     while (count < argc) {
         const string flag = argv[count];
@@ -56,12 +56,17 @@ int main(int argc, char **argv)
     construct_assembly_graph(inFile, s1, s2, overlap);
 
     auto assembled_time = clock.now();
-    cout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s << endl;
+    cout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s
+         << endl;
 
     connect_between_contigs();
 
+    cout << "Maximum occurance for a contig: " << Contig::maxocc_achived
+         << endl;
+
     auto connected_time = clock.now();
-    cout << "Time constructing: " << (connected_time - assembled_time) * 1.0 / 1s << endl;
+    cout << "Time constructing: "
+         << (connected_time - assembled_time) * 1.0 / 1s << endl;
 
     ofstream fout(outFile);
 
@@ -70,16 +75,19 @@ int main(int argc, char **argv)
 
     fout << endl
          << "Contigs: " << Contigs.size() << endl
-         << "Sites: " /* << Site::total  */<< Sites.size() << endl
-         << "Edges: " /* << Edge::count  */<< Edges.size() << endl;
-    
-    fout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s << endl
-         << "Time constructing: " << (connected_time - assembled_time) * 1.0 / 1s << endl;
-    
+         << "Sites: " /* << Site::total  */ << Sites.size() << endl
+         << "Edges: " /* << Edge::count  */ << Edges.size() << endl;
+
+    fout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s
+         << endl
+         << "Time constructing: "
+         << (connected_time - assembled_time) * 1.0 / 1s << endl;
+
     fout << export_sitegraph();
 
     auto finish_time = clock.now();
-    cout << "Time Writing: " << (finish_time - connected_time) * 1.0 / 1s << endl;
+    cout << "Time Writing: " << (finish_time - connected_time) * 1.0 / 1s
+         << endl;
     cout << "Total time: " << (finish_time - start_time) * 1.0 / 1s << endl;
 
     return 0;
