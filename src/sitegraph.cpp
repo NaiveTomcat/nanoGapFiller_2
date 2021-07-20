@@ -52,7 +52,8 @@ Contig::get_first_site(int overlap_length, int depth, int length)
             // std::cout << "Nullptr" << std::endl; // DEBUG
             continue;
         }
-        auto temp_sites = contig->get_first_site(overlap_length, depth + 1, length + sequence.length());
+        auto temp_sites = contig->get_first_site(overlap_length, depth + 1,
+                                                 length + sequence.length());
         for (auto temp_site_iter = temp_sites.begin();
              temp_site_iter < temp_sites.end(); temp_site_iter++) {
             std::get<1>(*temp_site_iter) += sequence.length();
