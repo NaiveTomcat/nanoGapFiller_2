@@ -8,7 +8,7 @@
 #include <vector>
 
 // Global flags
-static int64_t maxcontig   = 40;
+static int64_t maxcontig   = 400000;
 static int64_t maxoccur    = 2;
 static bool    find_layers = false;
 static bool    record_path = false;
@@ -20,7 +20,7 @@ class Edge
   public:
     Site *                   to;
     int64_t                  len;
-    std::vector<std::string> via;
+    std::vector<std::string> via; // NOTE: Contig names in reverse order
     static int               count;
 
     inline Edge(Site *b, int64_t len_) : to(b), len(len_) { count++; }

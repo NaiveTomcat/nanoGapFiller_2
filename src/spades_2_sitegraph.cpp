@@ -139,8 +139,10 @@ std::string export_sitegraph()
         for (auto edge : site->edges) {
             sout << site->id << " of " << site->of << ", " << edge->to->id
                  << " of " << edge->to->of << ", " << edge->len << " :";
-            for (auto via : edge->via)
-                sout << ' ' << via;
+            // for (auto via : edge->via)
+            //     sout << ' ' << via;
+            for (auto v = edge->via.rbegin(); v < edge->via.rend(); v++)
+                sout << ' ' << *v;
             sout << std::endl;
         }
     }
