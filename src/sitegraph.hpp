@@ -9,7 +9,7 @@
 
 // Global flags
 static int64_t maxcontig   = 40;
-static int64_t maxoccur    = 4;
+static int64_t maxoccur    = 40;
 static bool    find_layers = false;
 static bool    record_path = false;
 
@@ -51,6 +51,7 @@ class Contig
     int64_t occurance;
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
         reachable_site_memo;
+    bool had_memo;
 
   public:
     std::string           name;
@@ -58,7 +59,7 @@ class Contig
     std::string           sequence;
     std::vector<Site *>   sites;
 
-    Contig(std::string n) : name(n) {}
+    Contig(std::string n) : name(n), occurance(0), had_memo(false) {}
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
     get_first_site();
 };

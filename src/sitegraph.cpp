@@ -3,13 +3,16 @@
 std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
 Contig::get_first_site()
 {
-    if (!sites.empty())
+    if (sites.size() != 0)
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{
             {sites[0], sites[0]->pos, {name}}};
-    if (!reachable_site_memo.empty()) // Memorandum
+    if (had_memo) // Memorandum
         return reachable_site_memo;
     if (occurance > maxoccur)
+        return std::vector<
+            std::tuple<Site *, int64_t, std::vector<std::string>>>{};
+    if (next.size() == 0)
         return std::vector<
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
     occurance++;
@@ -17,6 +20,8 @@ Contig::get_first_site()
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
         next_sites;
     for (auto contig : next) {
+        if (contig == nullptr)
+            continue;
         auto temp_sites = contig->get_first_site();
         for (auto temp_site_iter = temp_sites.begin();
              temp_site_iter < temp_sites.end(); temp_site_iter++) {
@@ -29,5 +34,6 @@ Contig::get_first_site()
     }
     occurance--;
     reachable_site_memo = next_sites;
+    had_memo = true;
     return /* std::move */(next_sites);
 }

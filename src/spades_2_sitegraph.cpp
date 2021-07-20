@@ -5,11 +5,11 @@
 #include <sstream>
 #include <unordered_map>
 
-extern std::unordered_map<int, Site*> Sites;
+extern std::unordered_map<int, Site *> Sites;
 
-extern std::unordered_map<std::string, Contig*> Contigs;
+extern std::unordered_map<std::string, Contig *> Contigs;
 
-extern std::unordered_set<Edge*> Edges;
+extern std::unordered_set<Edge *> Edges;
 
 void construct_assembly_graph(std::string filename, std::string siteseq_1,
                               std::string siteseq_2, int overlap_length)
@@ -41,41 +41,51 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
             to_be_erased.push_back(contig_iter.first);
             continue;
         }
-        auto seq    = contig->sequence;
+        auto seq = contig->sequence;
         seq = seq.substr(0, seq.length() - overlap_length + siteseq_1.length());
         contig->sequence = seq;
         // Search sites
         {
+            std::vector<std::size_t> sites_location{};
             // Search for siteseq_1
             auto pos = seq.find(siteseq_1);
             while (pos != std::string::npos) {
-                auto site = new Site(contig->name, pos);
-                contig->sites.push_back(site);
-                Sites[site->id] = site;
-                pos = seq.find(siteseq_1, pos + 1);
+                // auto site = new Site(contig->name, pos);
+                // contig->sites.push_back(site);
+                // Sites[site->id] = site;
+                // pos             = seq.find(siteseq_1, pos + 1);
+                sites_location.push_back(pos);
             }
             // Search for siteseq_2
             pos = seq.find(siteseq_2);
             while (pos != std::string::npos) {
+                // auto site = new Site(contig->name, pos);
+                // contig->sites.push_back(site);
+                // Sites[site->id] = site;
+                // pos             = seq.find(siteseq_2, pos + 1);
+                sites_location.push_back(pos);
+            }
+            std::sort(sites_location.begin(), sites_location.end());
+            for (auto pos: sites_location) {
                 auto site = new Site(contig->name, pos);
                 contig->sites.push_back(site);
                 Sites[site->id] = site;
-                pos = seq.find(siteseq_2, pos + 1);
             }
         }
         // Sort sites
-        std::sort(contig->sites.begin(), contig->sites.end(),
-                  SiteComp);
-        // Add edges for sites within the same contig
-        for (auto site_iter = contig->sites.begin();
-             site_iter < contig->sites.end() - 1; site_iter++) {
-            auto edge = new Edge(*(site_iter + 1),
-                     (*(site_iter + 1))->pos - (*site_iter)->pos);
-            (*site_iter)->edges.push_back(edge);
-            Edges.insert(edge);
+        if (contig->sites.size() != 0) {
+            // std::sort(contig->sites.begin(), contig->sites.end(), SiteComp);
+            // Add edges for sites within the same contig
+            for (auto site_iter = contig->sites.begin();
+                 site_iter < contig->sites.end() - 1; site_iter++) {
+                auto edge = new Edge(*(site_iter + 1), (*(site_iter + 1))->pos -
+                                                           (*site_iter)->pos);
+                (*site_iter)->edges.push_back(edge);
+                Edges.insert(edge);
+            }
         }
     }
-    for (auto key: to_be_erased)
+    for (auto key : to_be_erased)
         Contigs.erase(key);
 }
 
@@ -83,18 +93,22 @@ void connect_between_contigs()
 {
     for (auto contig_iter : Contigs) {
         auto contig = contig_iter.second;
-        auto  back_dist =
-            contig->sequence.length() - contig->sites.back()->pos;
-        for (auto next : contig->next) {
-            if (next == nullptr)
-                continue;
-            auto site_tuples = next->get_first_site();
-            for (auto site_tuple : site_tuples) {
-                auto edge = new Edge(std::get<0>(site_tuple), back_dist + std::get<1>(site_tuple));
-                contig->sites.back()->edges.push_back(edge);
-                Edges.insert(edge);
+        if (contig->sites.size() == 0)
+            continue;
+        auto back_dist = contig->sequence.length() - contig->sites.back()->pos;
+        if (contig->next.size() != 0)
+            for (auto next : contig->next) {
+                if (next == nullptr)
+                    continue;
+                auto site_tuples = next->get_first_site();
+                for (auto site_tuple : site_tuples) {
+                    auto edge = new Edge(std::get<0>(site_tuple),
+                                         back_dist + std::get<1>(site_tuple));
+                    edge->via = std::get<2>(site_tuple);
+                    contig->sites.back()->edges.push_back(edge);
+                    Edges.insert(edge);
+                }
             }
-        }
     }
 }
 
@@ -104,7 +118,8 @@ std::string export_sitegraph()
     for (auto site_iter : Sites) {
         auto site = site_iter.second;
         for (auto edge : site->edges) {
-            sout << site->id << ' ' << edge->to->id << ' ' << edge->len << " :";
+            sout << site->id << " of " << site->of << ", " << edge->to->id
+                 << " of " << edge->to->of << ", " << edge->len << " :";
             for (auto via : edge->via)
                 sout << ' ' << via;
             sout << std::endl;

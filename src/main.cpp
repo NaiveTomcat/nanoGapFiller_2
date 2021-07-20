@@ -56,12 +56,12 @@ int main(int argc, char **argv)
     construct_assembly_graph(inFile, s1, s2, overlap);
 
     auto assembled_time = clock.now();
-    cout << "Time preprocess: " << (assembled_time - start_time) / 1s << endl;
+    cout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s << endl;
 
     connect_between_contigs();
 
     auto connected_time = clock.now();
-    cout << "Time constructing: " << (connected_time - assembled_time) / 1s << endl;
+    cout << "Time constructing: " << (connected_time - assembled_time) * 1.0 / 1s << endl;
 
     ofstream fout(outFile);
 
@@ -73,14 +73,14 @@ int main(int argc, char **argv)
          << "Sites: " /* << Site::total  */<< Sites.size() << endl
          << "Edges: " /* << Edge::count  */<< Edges.size() << endl;
     
-    fout << "Time preprocess: " << (assembled_time - start_time) / 1s << endl
-         << "Time constructing: " << (connected_time - assembled_time) / 1s << endl;
+    fout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s << endl
+         << "Time constructing: " << (connected_time - assembled_time) * 1.0 / 1s << endl;
     
     fout << export_sitegraph();
 
     auto finish_time = clock.now();
-    cout << "Time Writing: " << (finish_time - connected_time) / 1s << endl;
-    cout << "Total time: " << (finish_time - start_time) / 1s << endl;
+    cout << "Time Writing: " << (finish_time - connected_time) * 1.0 / 1s << endl;
+    cout << "Total time: " << (finish_time - start_time) * 1.0 / 1s << endl;
 
     return 0;
 }
