@@ -16,10 +16,10 @@ Contig::get_first_site(int overlap_length, int depth, int length)
                 {site, site->pos, {name}}};
         }
     }
-    // if (had_memo) // Memorandum
+    // if (had_memo[occurance]) // Memorandum
     // {
     //     // std::cout << "Find memo" << std::endl; // DEBUG
-    //     return reachable_site_memo;
+    //     return reachable_site_memo[occurance];
     // }
     if (occurance >= maxoccur) {
         // std::cout << "Too many for one contig" << std::endl; // DEBUG
@@ -63,10 +63,8 @@ Contig::get_first_site(int overlap_length, int depth, int length)
                           std::make_move_iterator(temp_sites.begin()),
                           std::make_move_iterator(temp_sites.end()));
     }
+    // reachable_site_memo[occurance] = next_sites;
+    // had_memo[occurance]            = true;
     occurance--;
-    reachable_site_memo = next_sites;
-    had_memo            = true;
-    // std::cout << "DFS at depth " << depth << " got answer" << std::endl; //
-    // DEBUG
     return /* std::move */ (next_sites);
 }

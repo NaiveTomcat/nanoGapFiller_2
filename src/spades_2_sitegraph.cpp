@@ -21,7 +21,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
     std::string              current_contig_name;
     std::vector<std::string> current_contig_successor_names;
 
-    std::ofstream csvdump("sites.csv"); // DEBUG
+    // std::ofstream csvdump("sites.csv"); // DEBUG
 
     while (std::getline(fin, current_line)) {
         if (current_line[0] == '>') { // Edge Header Line
@@ -62,7 +62,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         auto seq = contig->sequence;
         // seq = seq.substr(0, seq.length() - overlap_length +
         // siteseq_1.length());
-        contig->sequence = seq;
+        contig->sequence = seq.substr(overlap_length - siteseq_1.length());
         // Search sites
         {
             // Search for siteseq_1
@@ -103,7 +103,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
                 Edges.insert(edge);
             }
         }
-        csvdump << contig->name << "," << contig->sites.size() << std::endl;
+        // csvdump << contig->name << "," << contig->sites.size() << std::endl;
     }
     for (auto key : to_be_erased)
         Contigs.erase(key);

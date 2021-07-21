@@ -5,6 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "omptest",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/dp2/test/testomp.out",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "/root/dp2/test/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "test",
             "type": "cppdbg",
             "request": "launch",

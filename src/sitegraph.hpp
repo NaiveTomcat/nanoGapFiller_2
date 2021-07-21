@@ -49,9 +49,11 @@ class Contig
 {
   private:
     int64_t occurance;
-    std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-         reachable_site_memo;
-    bool had_memo;
+    // std::unordered_map<
+    //     int, std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>>
+    //     reachable_site_memo;
+    // // bool had_memo;
+    // std::unordered_map<int, bool> had_memo;
 
   public:
     std::string              name;
@@ -62,7 +64,7 @@ class Contig
 
     static int64_t maxocc_achived;
 
-    Contig(std::string n) : name(n), occurance(0), had_memo(false) {}
+    Contig(std::string n) : name(n), occurance(0) {}
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
     get_first_site(int overlap_length, int depth = 0, int length = 0);
 };
