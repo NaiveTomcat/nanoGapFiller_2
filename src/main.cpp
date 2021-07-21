@@ -1,6 +1,5 @@
 #include "sitegraph.hpp"
 #include "utils.hpp"
-#include <atomic>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -9,8 +8,7 @@ using namespace std;
 
 std::unordered_map<int, Site *>           Sites;
 std::unordered_map<std::string, Contig *> Contigs;
-// std::unordered_set<Edge *>                Edges;
-extern std::atomic_int64_t edgecount;
+std::unordered_set<Edge *>                Edges;
 
 int     Site::total            = 0;
 int     Edge::count            = 0;
@@ -78,8 +76,7 @@ int main(int argc, char **argv)
     fout << endl
          << "Contigs: " << Contigs.size() << endl
          << "Sites: " /* << Site::total  */ << Sites.size() << endl
-         << "Edges: " /* << Edge::count  */ /* << Edges.size()  */ << edgecount
-         << endl;
+         << "Edges: " /* << Edge::count  */ << Edges.size() << endl;
 
     fout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s
          << endl
