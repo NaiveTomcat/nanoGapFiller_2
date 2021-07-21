@@ -16,11 +16,11 @@ Contig::get_first_site(int overlap_length, int depth, int length)
                 {site, site->pos, {name}}};
         }
     }
-    if (had_memo) // Memorandum
-    {
-        // std::cout << "Find memo" << std::endl; // DEBUG
-        return reachable_site_memo;
-    }
+    // if (had_memo) // Memorandum
+    // {
+    //     // std::cout << "Find memo" << std::endl; // DEBUG
+    //     return reachable_site_memo;
+    // }
     if (occurance >= maxoccur) {
         // std::cout << "Too many for one contig" << std::endl; // DEBUG
         return std::vector<

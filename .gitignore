@@ -38,6 +38,7 @@ test/test.log
 test/test.seq
 *.csv
 omacc_human.fastg
+build/
 
 
 # http://www.gnu.org/software/automake
