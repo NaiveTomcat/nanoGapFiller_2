@@ -1,4 +1,4 @@
-#include "sitegraph.hpp"
+#include "sitegraph_omp.hpp"
 #include "utils.hpp"
 
 #include <fstream>
@@ -38,7 +38,7 @@ void construct_assembly_graph(const std::string &filename,
             //                 new Contig(current_contig_name)});
             // Contigs[current_contig_name] = std::reference_wrapper<Contig>(
             //     std::ref(*(new Contig(current_contig_name))));
-            Contigs[current_contig_name] = new Contig(current_contig_name);
+            Contigs[current_contig_name] = new Contig(current_contig_name,omp_get_max_threads());
             for (auto n : current_contig_successor_names) {
                 Contigs[current_contig_name]->next_names.push_back(n);
             }
