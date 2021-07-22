@@ -13,8 +13,10 @@ extern std::unordered_map<std::string, Contig *> Contigs;
 
 extern std::unordered_set<Edge *> Edges;
 
-void construct_assembly_graph(std::string filename, std::string siteseq_1,
-                              std::string siteseq_2, int overlap_length)
+void construct_assembly_graph(const std::string &filename,
+                              const std::string &siteseq_1,
+                              const std::string &siteseq_2,
+                              const int &        overlap_length)
 {
     std::ifstream            fin(filename);
     std::string              current_line;
@@ -62,7 +64,7 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         auto seq = contig->sequence;
         // seq = seq.substr(0, seq.length() - overlap_length +
         // siteseq_1.length());
-        contig->sequence = seq.substr(overlap_length - siteseq_1.length());
+        contig->sequence = seq.substr(overlap_length/*  - siteseq_1.length() */);
         // Search sites
         {
             // Search for siteseq_1
@@ -109,8 +111,9 @@ void construct_assembly_graph(std::string filename, std::string siteseq_1,
         Contigs.erase(key);
 }
 
-void connect_between_contigs(int overlap_length)
+void connect_between_contigs(int overlap_length, int64_t simplify)
 {
+    std::cout << "Simplify graph using parameter " << simplify << std::endl;
     for (auto contig_iter : Contigs) {
         auto contig = contig_iter.second;
         if (contig->sites.size() == 0)
@@ -120,12 +123,17 @@ void connect_between_contigs(int overlap_length)
             for (auto next : contig->next) {
                 if (next == nullptr)
                     continue;
-                auto site_tuples = next->get_first_site(overlap_length);
+                std::vector<
+                    std::tuple<Site *, int64_t, std::vector<std::string>>>
+                    site_tuples;
+                site_tuples = next->get_first_site(overlap_length, contig, simplify);
                 for (auto site_tuple : site_tuples) {
                     auto edge = new Edge(std::get<0>(site_tuple),
                                          back_dist + std::get<1>(site_tuple));
                     edge->via = std::get<2>(site_tuple);
                     contig->sites.back()->edges.push_back(edge);
+                    if (simplify >= 0)
+                        contig->sites.back()->edgelengths.insert({std::get<0>(site_tuple)->id,back_dist + std::get<1>(site_tuple)});
                     Edges.insert(edge);
                 }
             }
@@ -149,6 +157,7 @@ std::string export_sitegraph()
                 sout << ' ' << *v;
             sout << std::endl;
         }
+        sout << std::endl;
     }
     return sout.str();
 }

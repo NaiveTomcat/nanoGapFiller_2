@@ -43,9 +43,11 @@ get_contig_description(std::string contig_header)
 
 std::string export_sitegraph();
 
-void connect_between_contigs(int overlap_length);
+void connect_between_contigs(int overlap_length, int64_t);
 
-void construct_assembly_graph(const std::string& filename, const std::string& siteseq_1,
-                              const std::string& siteseq_2, const int& overlap_length = 127);
+void construct_assembly_graph(const std::string &filename,
+                              const std::string &siteseq_1,
+                              const std::string &siteseq_2,
+                              const int &        overlap_length = 127);
 
 #endif

@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     string  s1      = "GCTCTTC";
     string  s2      = "GAAGAGC";
     int64_t overlap = 77;
+    int64_t simplify = -1;
     while (count < argc) {
         const string flag = argv[count];
         if (flag == "-i")
@@ -36,8 +37,8 @@ int main(int argc, char **argv)
             s1 = argv[count + 1];
         else if (flag == "-s2")
             s2 = argv[count + 1];
-        // else if (flag == "-fl")
-        // 	findLayer = stoi(argv[count + 1]);
+        else if (flag == "-s")
+        	simplify = stoi(argv[count + 1]);
         // else if (flag == "-w")
         // 	toWrite = stoi(argv[count + 1]);
         else {
@@ -59,7 +60,7 @@ int main(int argc, char **argv)
     cout << "Time preprocess: " << (assembled_time - start_time) * 1.0 / 1s
          << endl;
 
-    connect_between_contigs(overlap - s1.length());
+    connect_between_contigs(overlap - s1.length(), simplify);
 
     cout << "Maximum occurance for a contig: " << Contig::maxocc_achived
          << endl;

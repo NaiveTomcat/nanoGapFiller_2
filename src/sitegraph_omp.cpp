@@ -42,7 +42,9 @@ Contig::get_first_site(int overlap_length, int depth, int length)
             std::tuple<Site *, int64_t, std::vector<std::string>>>{};
     }
     occurance[omp_get_thread_num()]++;
-    maxocc_achived = occurance[omp_get_thread_num()] > maxocc_achived ? occurance[omp_get_thread_num()] : maxocc_achived;
+    maxocc_achived = occurance[omp_get_thread_num()] > maxocc_achived
+                         ? occurance[omp_get_thread_num()]
+                         : maxocc_achived;
     // DFS
     // std::cout << "DFS at depth " << depth << std::endl; // DEBUG
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>

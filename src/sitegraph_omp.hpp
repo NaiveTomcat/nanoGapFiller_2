@@ -3,10 +3,10 @@
 #define _SITEGRAPH_H_
 
 #include <functional>
+#include <list>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <list>
 
 #include <omp.h>
 
@@ -54,8 +54,8 @@ class Contig
     // int64_t occurance;
     std::vector<int64_t> occurance;
     // std::unordered_map<
-    //     int, std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>>
-    //     reachable_site_memo;
+    //     int, std::vector<std::tuple<Site *, int64_t,
+    //     std::vector<std::string>>>> reachable_site_memo;
     // // bool had_memo;
     // std::unordered_map<int, bool> had_memo;
 

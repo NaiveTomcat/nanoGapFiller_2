@@ -38,7 +38,8 @@ void construct_assembly_graph(const std::string &filename,
             //                 new Contig(current_contig_name)});
             // Contigs[current_contig_name] = std::reference_wrapper<Contig>(
             //     std::ref(*(new Contig(current_contig_name))));
-            Contigs[current_contig_name] = new Contig(current_contig_name,omp_get_max_threads());
+            Contigs[current_contig_name] =
+                new Contig(current_contig_name, omp_get_max_threads());
             for (auto n : current_contig_successor_names) {
                 Contigs[current_contig_name]->next_names.push_back(n);
             }
@@ -60,11 +61,11 @@ void construct_assembly_graph(const std::string &filename,
 
     std::vector<std::size_t> sites_location{};
 
-// #pragma omp parallel shared(edgecount)
+    // #pragma omp parallel shared(edgecount)
     {
-// #pragma omp single
+        // #pragma omp single
         for (auto contig_iter : Contigs) {
-// #pragma omp task
+            // #pragma omp task
             {
                 auto contig = contig_iter.second;
                 if (contig == nullptr) {
@@ -130,7 +131,7 @@ void construct_assembly_graph(const std::string &filename,
 
 void connect_between_contigs(int overlap_length)
 {
-#pragma omp parallel shared(edgecount,Contigs)
+#pragma omp parallel shared(edgecount, Contigs)
     {
 #pragma omp single
         for (auto contig_iter : Contigs) {

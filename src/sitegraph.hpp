@@ -32,10 +32,11 @@ class Site
   public:
     static int total;
 
-    int                 id;
-    int64_t             pos;
-    std::string         of;
-    std::vector<Edge *> edges;
+    int                                       id;
+    int64_t                                   pos;
+    std::string                               of;
+    std::vector<Edge *>                       edges;
+    std::unordered_multimap<int64_t, int64_t> edgelengths;
     // std::vector<std::reference_wrapper<Site>> layer1;
     // std::vector<std::reference_wrapper<Site>> layer2;
     // std::vector<std::reference_wrapper<Site>> layer3;
@@ -50,8 +51,8 @@ class Contig
   private:
     int64_t occurance;
     // std::unordered_map<
-    //     int, std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>>
-    //     reachable_site_memo;
+    //     int, std::vector<std::tuple<Site *, int64_t,
+    //     std::vector<std::string>>>> reachable_site_memo;
     // // bool had_memo;
     // std::unordered_map<int, bool> had_memo;
 
@@ -66,7 +67,8 @@ class Contig
 
     Contig(std::string n) : name(n), occurance(0) {}
     std::vector<std::tuple<Site *, int64_t, std::vector<std::string>>>
-    get_first_site(int overlap_length, int depth = 0, int length = 0);
+    get_first_site(int overlap_length, Contig *from, int simplify_range = -1,
+                   int depth = 0, int length = 0);
 };
 
 #endif
