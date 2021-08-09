@@ -8,11 +8,11 @@
 #include <vector>
 
 // Global flags
-static int64_t maxcontig   = 399999;
-static int64_t maxoccur    = 2;
-static int64_t maxlength   = INT64_MAX;
-static bool    find_layers = false;
-static bool    record_path = false;
+extern int64_t maxcontig   ;
+extern int64_t maxoccur    ;
+extern int64_t maxlength   ;
+extern bool    find_layers ;
+extern bool    record_path ;
 
 class Site;
 
@@ -55,6 +55,7 @@ class Contig
     //     std::vector<std::string>>>> reachable_site_memo;
     // // bool had_memo;
     // std::unordered_map<int, bool> had_memo;
+    std::unordered_multimap<int64_t, Contig*> edges_map;
 
   public:
     std::string              name;

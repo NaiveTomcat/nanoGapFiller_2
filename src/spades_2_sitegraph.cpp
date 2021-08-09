@@ -64,7 +64,8 @@ void construct_assembly_graph(const std::string &filename,
         auto seq = contig->sequence;
         // seq = seq.substr(0, seq.length() - overlap_length +
         // siteseq_1.length());
-        contig->sequence = seq.substr(overlap_length/*  - siteseq_1.length() */);
+        contig->sequence =
+            seq.substr(overlap_length /*  - siteseq_1.length() */);
         // Search sites
         {
             // Search for siteseq_1
@@ -126,14 +127,19 @@ void connect_between_contigs(int overlap_length, int64_t simplify)
                 std::vector<
                     std::tuple<Site *, int64_t, std::vector<std::string>>>
                     site_tuples;
-                site_tuples = next->get_first_site(overlap_length, contig, simplify);
+                site_tuples =
+                    next->get_first_site(overlap_length, contig, simplify);
                 for (auto site_tuple : site_tuples) {
+                    if (back_dist + std::get<1>(site_tuple) >= maxlength)
+                        continue;
                     auto edge = new Edge(std::get<0>(site_tuple),
                                          back_dist + std::get<1>(site_tuple));
                     edge->via = std::get<2>(site_tuple);
                     contig->sites.back()->edges.push_back(edge);
                     if (simplify >= 0)
-                        contig->sites.back()->edgelengths.insert({std::get<0>(site_tuple)->id,back_dist + std::get<1>(site_tuple)});
+                        contig->sites.back()->edgelengths.insert(
+                            {std::get<0>(site_tuple)->id,
+                             back_dist + std::get<1>(site_tuple)});
                     Edges.insert(edge);
                 }
             }
@@ -147,15 +153,28 @@ std::string export_sitegraph()
     std::ostringstream sout;
     for (auto site_iter : Sites) {
         auto site = site_iter.second;
-        for (auto edge : site->edges) {
-            sout << site->id << " of " << site->of << ", " << edge->to->id
-                 << " of " << edge->to->of << ", " << edge->len << " :";
-            // for (auto via : edge->via)
-            //     sout << ' ' << via;
-            sout << ' ' << site->of;
-            for (auto v = edge->via.rbegin(); v < edge->via.rend(); v++)
-                sout << ' ' << *v;
-            sout << std::endl;
+        int  deg2 = 0, deg3 = 0;
+        if (find_layers) {
+            sout << "Site has " << site->edges.size() << " out degree."
+                 << std::endl;
+            for (auto edge : site->edges) {
+                deg2 += edge->to->edges.size();
+                for (auto edge3 : edge->to->edges)
+                    deg3 += edge3->to->edges.size();
+            }
+            sout << deg2 << " layer 2 and " << deg3 << " layer 3." << std::endl;
+        }
+        if (record_path) {
+            for (auto edge : site->edges) {
+                sout << site->id << " of " << site->of << ", " << edge->to->id
+                     << " of " << edge->to->of << ", " << edge->len << " :";
+                // for (auto via : edge->via)
+                //     sout << ' ' << via;
+                sout << ' ' << site->of;
+                for (auto v = edge->via.rbegin(); v < edge->via.rend(); v++)
+                    sout << ' ' << *v;
+                sout << std::endl;
+            }
         }
         sout << std::endl;
     }

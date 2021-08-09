@@ -14,6 +14,12 @@ int     Site::total            = 0;
 int     Edge::count            = 0;
 int64_t Contig::maxocc_achived = 0;
 
+int64_t maxcontig   = 399999;
+int64_t maxoccur    = 2;
+int64_t maxlength   = INT64_MAX;
+bool    find_layers = false;
+bool    record_path = true;
+
 int main(int argc, char **argv)
 {
     int     count   = 1;
@@ -33,12 +39,21 @@ int main(int argc, char **argv)
             overlap = stoi(argv[count + 1]);
         else if (flag == "-r")
             maxoccur = stoi(argv[count + 1]);
+        else if (flag == "-ml")
+            maxlength = stoi(argv[count + 1]) + 1;
+        else if (flag == "-c")
+            maxcontig = stoi(argv[count + 1]) - 1;
         else if (flag == "-s1")
             s1 = argv[count + 1];
         else if (flag == "-s2")
             s2 = argv[count + 1];
         else if (flag == "-s")
         	simplify = stoi(argv[count + 1]);
+        else if (flag == "-rp") 
+            record_path = stoi(argv[count + 1]);
+        else if (flag == "-fl") 
+            find_layers = stoi(argv[count + 1]);
+        
         // else if (flag == "-w")
         // 	toWrite = stoi(argv[count + 1]);
         else {
