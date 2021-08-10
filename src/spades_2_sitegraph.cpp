@@ -148,9 +148,10 @@ void connect_between_contigs(int overlap_length, int64_t simplify)
     }
 }
 
-std::string export_sitegraph()
+std::tuple<std::string, int, int, int> export_sitegraph()
 {
     std::ostringstream sout;
+    int                totald1 = 0, totald2 = 0, totald3 = 0;
     for (auto site_iter : Sites) {
         auto site = site_iter.second;
         int  deg2 = 0, deg3 = 0;
@@ -163,6 +164,9 @@ std::string export_sitegraph()
                     deg3 += edge3->to->edges.size();
             }
             sout << deg2 << " layer 2 and " << deg3 << " layer 3." << std::endl;
+            totald1 += site->edges.size();
+            totald2 += deg2;
+            totald3 += deg3;
         }
         if (record_path) {
             for (auto edge : site->edges) {
@@ -178,5 +182,5 @@ std::string export_sitegraph()
         }
         sout << std::endl;
     }
-    return sout.str();
+    return std::make_tuple(sout.str(), totald1, totald2, totald3);
 }

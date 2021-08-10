@@ -41,7 +41,7 @@ get_contig_description(std::string contig_header)
                                                             successor);
 }
 
-std::string export_sitegraph();
+std::tuple<std::string, int, int, int> export_sitegraph();
 
 void connect_between_contigs(int overlap_length, int64_t);
 

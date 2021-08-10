@@ -69,6 +69,10 @@
         "fstream": "cpp",
         "iomanip": "cpp",
         "cfenv": "cpp",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "any": "cpp",
+        "forward_list": "cpp",
+        "future": "cpp",
+        "valarray": "cpp"
     }
 }

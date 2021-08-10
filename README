@@ -1,0 +1,25 @@
+NANOGAPFILLER_2
+
+编译：autotools工具链应当能自动完成Makefile的生成，可手动编译
+g++ src/main.cpp src/sitegraph.cpp src/spades_2_sitegraph.cpp -o <输出文件名> -O3 -g --std=c++17
+
+作用：将assembly graph转化成site graph
+
+命令行参数：
+-i 包含assembly graph的spades输出的fastg文件
+
+-o 输出site graph的文件
+
+-r 同个contig最多出现几次 
+
+-l 两个contig间的overlap
+
+-s1 site序列A
+
+-s2 site序列B
+
+-ml 两site间最长的距离
+
+-rp 是否记录路径
+
+-fl 是否计算并输出各个节点的出度

@@ -22,12 +22,12 @@ bool    record_path = true;
 
 int main(int argc, char **argv)
 {
-    int     count   = 1;
-    string  inFile  = "assembly_graph.fastg";
-    string  outFile = "Output.sitegraph";
-    string  s1      = "GCTCTTC";
-    string  s2      = "GAAGAGC";
-    int64_t overlap = 77;
+    int     count    = 1;
+    string  inFile   = "assembly_graph.fastg";
+    string  outFile  = "Output.sitegraph";
+    string  s1       = "GCTCTTC";
+    string  s2       = "GAAGAGC";
+    int64_t overlap  = 77;
     int64_t simplify = -1;
     while (count < argc) {
         const string flag = argv[count];
@@ -48,12 +48,12 @@ int main(int argc, char **argv)
         else if (flag == "-s2")
             s2 = argv[count + 1];
         else if (flag == "-s")
-        	simplify = stoi(argv[count + 1]);
-        else if (flag == "-rp") 
+            simplify = stoi(argv[count + 1]);
+        else if (flag == "-rp")
             record_path = stoi(argv[count + 1]);
-        else if (flag == "-fl") 
+        else if (flag == "-fl")
             find_layers = stoi(argv[count + 1]);
-        
+
         // else if (flag == "-w")
         // 	toWrite = stoi(argv[count + 1]);
         else {
@@ -99,7 +99,11 @@ int main(int argc, char **argv)
          << "Time constructing: "
          << (connected_time - assembled_time) * 1.0 / 1s << endl;
 
-    fout << export_sitegraph();
+    string tmp;
+    int    a, b, c;
+    std::tie(tmp, a, b, c) = export_sitegraph();
+    fout << "L1 edges: " << a << "\nL2 edges: " << b << "\nL3 edges: " << c
+         << endl;
 
     auto finish_time = clock.now();
     cout << "Time Writing: " << (finish_time - connected_time) * 1.0 / 1s
